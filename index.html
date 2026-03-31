@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Анаграм — Игра Слова</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="game-container">
+        <!-- Start Screen Overlay -->
+        <div class="start-screen" id="start-screen">
+            <div class="start-logo">АБВ</div>
+            <h1>Анаграм</h1>
+            <p class="start-subtitle">Сложи слова, погоди реч!</p>
+            <button class="start-btn" id="start-btn">ИГРАЈ</button>
+            <div class="start-highscore" id="start-highscore"></div>
+        </div>
+
+        <!-- Modern Header Bar -->
+        <div class="header-bar">
+            <!-- Left: Grade Selector -->
+            <div class="grade-selector" id="grade-selector">
+                <button class="grade-btn active" data-grade="1">1</button>
+                <button class="grade-btn" data-grade="2">2</button>
+                <button class="grade-btn" data-grade="3">3</button>
+                <button class="grade-btn" data-grade="4">4</button>
+            </div>
+
+            <!-- Center: Score + Streak -->
+            <div class="score-display">
+                <span id="score" class="score-number">0</span>
+                <span id="streak-badge" class="streak-badge hidden">🔥 <span id="streak-count">0</span></span>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="actions">
+                <button class="action-btn hint-btn" id="hint-btn" title="Помоћ">💡</button>
+                <div class="toggle-wrapper" title="Слике">
+                    <label class="icon-toggle">
+                        <input type="checkbox" id="img-toggle-checkbox">
+                        <span class="icon-visual">📷</span>
+                    </label>
+                </div>
+                <button class="action-btn sound-btn" id="sound-toggle" title="Звук">🔊</button>
+                <button class="action-btn reload-btn" id="reset-btn" title="Нова реч">↻</button>
+                <button class="action-btn theme-btn" id="night-toggle" title="Тема">🌙</button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <span class="progress-text" id="progress-text">0 / 0</span>
+        </div>
+
+        <!-- Category Label -->
+        <div class="category-label" id="category-label"></div>
+
+        <div class="game-area">
+            <!-- Image Display -->
+            <div class="word-image-container" id="word-image-container" style="display: none;">
+                <img id="word-image" src="" alt="Word Image">
+                <div class="word-emoji" id="word-emoji" style="display: none;"></div>
+            </div>
+
+            <!-- Slots where user drops letters -->
+            <div class="target-word-container" id="target-container">
+            </div>
+
+            <!-- Pool of scrambled letters -->
+            <div class="scrambled-letters-container" id="letters-container">
+            </div>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div class="modal-overlay" id="feedback-modal">
+            <div class="modal-content">
+                <h2 id="feedback-title">Опс!</h2>
+                <p id="feedback-message">Није тачно!</p>
+                <button class="modal-btn" id="feedback-btn">ОК</button>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="modal-overlay" id="confirm-modal">
+            <div class="modal-content">
+                <h2>Нова игра?</h2>
+                <p>Желиш да кренеш испочетка?</p>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel" id="confirm-no">Не</button>
+                    <button class="modal-btn" id="confirm-yes">Да</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Modal -->
+        <div class="modal-overlay" id="complete-modal">
+            <div class="modal-content complete-content">
+                <div class="complete-star">⭐</div>
+                <h2 id="complete-title">Свака част!</h2>
+                <p id="complete-message">Завршио си све речи!</p>
+                <div class="complete-stats" id="complete-stats"></div>
+                <button class="modal-btn" id="complete-btn">Играј поново</button>
+            </div>
+        </div>
+
+        <!-- Confetti Canvas -->
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <script src="words.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

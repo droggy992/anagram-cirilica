@@ -1,0 +1,37 @@
+{
+  "name": "anagram-igra",
+  "version": "2.0.0",
+  "description": "Анаграм — Едукативна игра ћириличних слова за децу",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build-dir": "electron-builder --win --dir"
+  },
+  "build": {
+    "appId": "com.anagram.igra",
+    "productName": "Анаграм",
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico"
+    },
+    "portable": {
+      "artifactName": "Anagram.exe"
+    },
+    "files": [
+      "index.html",
+      "style.css",
+      "script.js",
+      "words.js",
+      "main.js",
+      "images/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  }
+}
