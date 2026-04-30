@@ -23,6 +23,7 @@
     --radius: 16px;
     --radius-lg: 24px;
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --wrong-color: #ff4757;
 }
 
 body.night-mode {
@@ -95,6 +96,43 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── Animated Background Orbs ─── */
+.game-container::before,
+.game-container::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatOrb 12s ease-in-out infinite;
+}
+
+.game-container::before {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: -80px;
+    right: -80px;
+}
+
+.game-container::after {
+    width: 250px;
+    height: 250px;
+    background: var(--success);
+    bottom: -60px;
+    left: -60px;
+    animation-delay: -6s;
+}
+
+@keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(30px, -20px) scale(1.1); }
+    50% { transform: translate(-20px, 30px) scale(0.95); }
+    75% { transform: translate(15px, 15px) scale(1.05); }
+}
+
 /* ─── Start Screen ─── */
 .start-screen {
     position: fixed;
@@ -159,6 +197,16 @@ body {
 .start-btn:hover, .start-btn:active {
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 12px 30px var(--primary-glow);
+}
+
+/* Breathing glow on start button */
+.start-btn {
+    animation: btnBreath 2.5s ease-in-out infinite;
+}
+
+@keyframes btnBreath {
+    0%, 100% { box-shadow: 0 8px 25px var(--primary-glow); }
+    50% { box-shadow: 0 8px 40px rgba(255, 107, 107, 0.6); }
 }
 
 .start-highscore {
@@ -322,9 +370,16 @@ body {
 .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--success), var(--secondary));
+    background-size: 200% 100%;
+    animation: progressShimmer 3s ease infinite;
     border-radius: 3px;
     width: 0%;
     transition: width 0.5s ease;
+}
+
+@keyframes progressShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 .progress-text {
@@ -334,6 +389,7 @@ body {
     font-size: 0.7rem;
     color: var(--text-muted);
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ─── Category Label ─── */
@@ -343,7 +399,13 @@ body {
     margin-bottom: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeInLabel 0.5s ease 0.3s forwards;
+}
+
+@keyframes fadeInLabel {
+    to { opacity: 1; }
 }
 
 /* ─── Game Area ─── */
@@ -383,6 +445,13 @@ body {
     font-size: 5rem;
     line-height: 1;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    animation: emojiPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes emojiPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* ─── Letter Slots (Target) ─── */
@@ -392,6 +461,12 @@ body {
     justify-content: center;
     gap: 8px;
     width: 100%;
+}
+
+/* Word spacer for multi-word entries like НОВИ САД */
+.letter-slot-spacer {
+    width: 28px;
+    flex-shrink: 0;
 }
 
 .letter-slot {
@@ -423,6 +498,12 @@ body {
     border-style: solid;
     border-color: var(--secondary);
     background: rgba(254, 202, 87, 0.1);
+    animation: hintGlow 0.5s ease;
+}
+
+@keyframes hintGlow {
+    0% { box-shadow: 0 0 0 0 rgba(254, 202, 87, 0.6); }
+    100% { box-shadow: 0 0 0 0 transparent; }
 }
 
 .letter-slot.hint-filled .draggable-letter {
@@ -460,30 +541,55 @@ body {
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
+/* Letter entrance animation */
+.draggable-letter {
+    animation: letterDrop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+.draggable-letter:nth-child(1) { animation-delay: 0.05s; }
+.draggable-letter:nth-child(2) { animation-delay: 0.10s; }
+.draggable-letter:nth-child(3) { animation-delay: 0.15s; }
+.draggable-letter:nth-child(4) { animation-delay: 0.20s; }
+.draggable-letter:nth-child(5) { animation-delay: 0.25s; }
+.draggable-letter:nth-child(6) { animation-delay: 0.30s; }
+.draggable-letter:nth-child(7) { animation-delay: 0.35s; }
+.draggable-letter:nth-child(8) { animation-delay: 0.40s; }
+.draggable-letter:nth-child(9) { animation-delay: 0.45s; }
+.draggable-letter:nth-child(10) { animation-delay: 0.50s; }
+.draggable-letter:nth-child(11) { animation-delay: 0.55s; }
+
+@keyframes letterDrop {
+    0% { transform: translateY(-30px) scale(0.5); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
 .draggable-letter.correct {
     background: var(--success);
     color: white;
-    box-shadow: 0 4px 0 rgba(0, 180, 220, 0.4);
+    box-shadow: 0 4px 0 rgba(0, 180, 220, 0.4), 0 0 20px var(--success-glow);
     animation: correctBounce 0.4s ease;
 }
 
 @keyframes correctBounce {
     0% { transform: scale(1); }
-    30% { transform: scale(1.15); }
-    60% { transform: scale(0.95); }
-    100% { transform: scale(1); }
+    30% { transform: scale(1.2) rotate(3deg); }
+    60% { transform: scale(0.95) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
 .draggable-letter.wrong {
-    animation: wrongShake 0.4s ease;
+    background: var(--wrong-color);
+    color: white;
+    animation: wrongShake 0.5s ease;
 }
 
 @keyframes wrongShake {
     0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
+    15% { transform: translateX(-10px) rotate(-3deg); }
+    30% { transform: translateX(10px) rotate(3deg); }
+    45% { transform: translateX(-6px) rotate(-2deg); }
+    60% { transform: translateX(6px) rotate(2deg); }
+    75% { transform: translateX(-2px); }
 }
 
 /* ─── Modals ─── */

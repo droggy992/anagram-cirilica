@@ -233,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (char === ' ') {
                 const spacer = document.createElement('div');
                 spacer.classList.add('letter-slot-spacer');
-                spacer.style.width = '20px';
                 targetContainer.appendChild(spacer);
             } else {
                 const slot = document.createElement('div');
@@ -281,7 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
             letter.addEventListener('touchend', handleTouchEnd);
 
             // Click-to-place: clicking a letter places it in next available slot
-            letter.addEventListener('click', () => handleLetterClick(letter));
+            letter.addEventListener('click', () => {
+                if (touchHandled) return; // Suppress click after touch
+                handleLetterClick(letter);
+            });
 
             lettersContainer.appendChild(letter);
         });
@@ -387,11 +389,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Touch Logic ───
     let touchTarget = null;
+    let touchSourceSlot = null; // Track where the letter came from
+    let touchHandled = false; // Prevent click firing after touch
 
     function handleTouchStart(e) {
         if (this.parentElement.classList.contains('hint-filled')) return;
         e.preventDefault();
         touchTarget = this;
+        touchHandled = true;
+        // Remember source before detaching
+        touchSourceSlot = this.parentElement;
         const touch = e.touches[0];
         document.body.appendChild(this);
         this.style.position = 'fixed';
@@ -463,13 +470,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!dropped) {
             resetTouchStyles(touchTarget);
-            lettersContainer.appendChild(touchTarget);
+            // Return to original source if possible
+            if (touchSourceSlot && touchSourceSlot.classList.contains('letter-slot')) {
+                touchSourceSlot.appendChild(touchTarget);
+                touchSourceSlot.classList.add('filled');
+            } else {
+                lettersContainer.appendChild(touchTarget);
+            }
             playReturn();
         }
 
         targetContainer.querySelectorAll('.letter-slot').forEach(s => s.classList.remove('highlight'));
         touchTarget = null;
+        touchSourceSlot = null;
         checkWinCondition();
+        // Clear touch flag after a delay to suppress the subsequent click event
+        setTimeout(() => { touchHandled = false; }, 300);
     }
 
     function moveAt(x, y, el) {
@@ -584,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         setTimeout(() => {
-            showFeedback("Покушај поново! 💪", "Неке слове нису на правом месту.", () => {
+            showFeedback("Покушај поново! 💪", "Нека слова нису на правом месту.", () => {
                 // Return all letters to pool (keep hints)
                 slots.forEach(slot => {
                     if (!slot.classList.contains('hint-filled') && slot.children.length > 0) {
